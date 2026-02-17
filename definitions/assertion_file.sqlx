@@ -1,0 +1,7 @@
+config {
+  type: "assertion",
+  schema: "dataset1",
+  name: "assertion_file"
+}
+
+select * from ${ref("emp")} where salary is null or salary <= 0;

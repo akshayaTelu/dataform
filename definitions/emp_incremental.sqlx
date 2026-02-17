@@ -1,0 +1,22 @@
+config {
+  type: "incremental",
+  schema: "dataset1",
+  name: "emp_target",
+  uniqueKey: ["emp_id"],
+  dependencies: ["assertion_file"]
+}
+
+pre_operations {
+ create table if not exists `clear-apogee-479910-j1.dataset1.emp_audit` (table_name STRING,run_time TIMESTAMP);
+}
+
+select emp_id,emp_name,department,salary,salary * 1.10 AS salary_with_bonus,join_date,updated_at
+from ${ref("emp")}
+${when(incremental(),
+  `WHERE updated_at > (SELECT MAX(updated_at) FROM ${self()})` )
+  }
+
+post_operations {
+  insert into `clear-apogee-479910-j1.dataset1.emp_audit`
+  values ('emp_target', CURRENT_TIMESTAMP());
+}
