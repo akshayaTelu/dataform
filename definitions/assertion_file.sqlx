@@ -4,4 +4,4 @@ config {
   name: "assertion_file"
 }
 
-select * from ${ref("emp")} where salary is null or salary <= 0;
+select * from ${ref("emp")} where salary is null or salary <= 0
