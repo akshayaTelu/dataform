@@ -1,0 +1,30 @@
+config {
+  type: "incremental",
+  uniqueKey: ["id"],
+  schema: "dev_curated",
+  tags: ["daily"]
+}
+
+pre_operations {
+  -- Added semicolon here
+  INSERT INTO ${ref("audit_log")} (file_name, load_time, status)
+  VALUES ("sales_pipeline", CURRENT_TIMESTAMP(), "STARTED");
+}
+
+SELECT
+  id,
+  name,
+  amount,
+  transaction_date,
+  CURRENT_TIMESTAMP() as transformed_time
+FROM ${ref("raw_sales")}
+
+${when(incremental(), 
+  `WHERE CURRENT_TIMESTAMP() > (SELECT COALESCE(MAX(transformed_time), TIMESTAMP("1970-01-01")) FROM ${self()})` 
+)}
+
+post_operations {
+  -- Added semicolon here for good measure
+  INSERT INTO ${ref("audit_log")} (file_name, load_time, status, records_loaded)
+  SELECT "sales_pipeline", CURRENT_TIMESTAMP(), "SUCCESS", COUNT(*) FROM ${self()};
+}

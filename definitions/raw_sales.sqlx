@@ -1,0 +1,5 @@
+config {
+  type: "declaration",
+  schema: "dev_raw",
+  name: "raw_sales"
+}
