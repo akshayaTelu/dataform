@@ -1,0 +1,15 @@
+config {
+  type: "table",
+  schema: "akshu",
+  name: "final_sales_report"
+}
+
+SELECT
+  transaction_id,
+  UPPER(product_name) as product_name,
+  amount,
+  transaction_date,
+  ROUND(amount * 0.10, 2) as tax_amount,
+  CURRENT_TIMESTAMP() as processed_at,
+  source_file
+FROM ${ref("staging_table")}

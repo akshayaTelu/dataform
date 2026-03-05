@@ -1,0 +1,7 @@
+config {
+  type: "declaration",
+  database: "bilvantisaimlproject",
+  schema: "akshu",
+  name: "staging_table",
+  description: "The raw staging table loaded from GCS"
+}
